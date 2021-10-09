@@ -1,6 +1,6 @@
 ---
 title: "Lab1AnalisisPCA"
-author: "Diego Alegria 15171, Ayleen Rubio 19003, Andrés Say 19705, Mario Sarmientos 17055"
+author: "Diego Alegria 15171, Ayleen Rubio 19003, Andrés Say 19705"
 date: "23/7/2021"
 output: html_document
 ---
