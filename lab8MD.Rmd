@@ -7,8 +7,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir="C:/Users/andre/OneDrive/Documentos/3er año/2do semestre/Data science/Lab_8DS")
+knitr::opts_knit$set(root.dir="C:/Users/Ingebor Rubio/Desktop/Trabajos/Sexto Semestre/Data science/Lab8/Lab_8DS")
+#"C:/Users/andre/OneDrive/Documentos/3er año/2do semestre/Data science/Lab_8DS"
 #"C:/Users/andre/OneDrive/Documentos/3er año/2do semestre/Data science/Laboratorio2-DS"
+#C:/Users/Ingebor Rubio/Desktop/Trabajos/Sexto Semestre/Data science/Lab8/Lab_8DS
 ```
 
 ## Análisis Exploratorio
@@ -26,6 +28,11 @@ library(ggfortify)
 library(lmtest)
 library(xts)
 library(zoo)
+library(viridis)
+theme_set(
+  theme_minimal() +
+    theme(legend.position = "right")
+  )
 
 consumo <- read.csv("DatosConsumoCombustibles.csv")
 importacion <- read.csv("DatosImportacionCombustibles.csv")
@@ -54,7 +61,7 @@ str(importacion)
 #table
 table(unlist(lapply(importacion, class)))
 ```
-Luego, en el dataset de importación se tienen 29 variables en total de las cuales 6 son enteras y 23 son numéricas. De nuevo tenemos las temporales, mes y año, de 2001 a 20021. Luego están las variables de los galones de cada tipo de combustible y sus costos respectivos. De igual manera tenemos gasolinaSuper, GasolinaRegular, Diesel, DieselLS, GLP (las alternativas asociadas). El total de Diesel, el total gasolina en general, los combustibles derivados, además de los demás productos como los aceites, grasas, solventes, ceras etc. Por último se tiene el total mensual por la importación de cada una de ellas. 
+Luego, en el dataset de importación se tienen 29 variables en total de las cuales 6 son enteras y 23 son numéricas. De nuevo tenemos las temporales, mes y año, de 2001 a 2021. Luego están las variables de los galones de cada tipo de combustible y sus costos respectivos. De igual manera tenemos gasolinaSuper, GasolinaRegular, Diesel, DieselLS, GLP (las alternativas asociadas). El total de Diesel, el total gasolina en general, los combustibles derivados, además de los demás productos como los aceites, grasas, solventes, ceras etc. Por último se tiene el total mensual por la importación de cada una de ellas. 
 
 Se analizará las variables a estudiar del consumo, en este caso; gasolina super, gasolina Regular y Diesel en razón del tiempo. Mes y Año. Para determinar observaciones generales del set de datos. 
 
@@ -66,19 +73,26 @@ Primero se realizará el análisis con la información en el set de datos de con
 
 ```{r consumo anio vs super, echo=FALSE}
 df <- consumo[,c(2,4)]
-p<-ggplot(data=df, aes(x=Anio, y=GasolinaSuper)) +
-  geom_bar(stat="identity")
+p<-ggplot(data=df, aes(x=Anio, y=GasolinaSuper, fill = "Consumo")) +
+  geom_bar(stat="identity") 
+p <- p + scale_fill_manual(values = c("#999999"))
 p
 ```
 
 En la gráfica de barras se muestra el consumo total de cada año de gasolina super, se puede evidenciar que hay un crecimiento en casi todos los años, mientras que al comienzo parece no canviar relativamente mucho, al llegar al año al 2013-2014 hay un aumento significativo en el consumo, probablemente por el aumento parcial de vehiculos durante esos años, tambien se muestran los datos del 2021 (lo que va por el momento) y parece que el consumo llegara a ser bastante de nuevo.
+```{r}
+df <- consumo[,c(2,4)]
+p<-ggplot(df, aes(x=Anio, y=cumsum(GasolinaSuper))) + geom_line() + geom_point()
+p
+```
 
 ### Consumo de gasolina super por mes
 
 ```{r consumo mes vs super, echo=FALSE}
 df <- consumo[,c(3,4)]
-p<-ggplot(data=df, aes(x=Mes, y=GasolinaSuper)) +
+p<-ggplot(data=df, aes(x=Mes, y=GasolinaSuper, fill = "Consumo")) +
   geom_bar(stat="identity")
+p <- p + scale_fill_manual(values = c("#E69F00"))
 p
 ```
 
@@ -86,10 +100,13 @@ En la gráfica anterior se muestra el consumo total que hubo en cada mes de los 
 
 ### Consumo de gasolina regular por año
 
+
+
 ```{r consumo anio vs regular, echo=FALSE}
 df <- consumo[,c(2,5)]
-p<-ggplot(data=df, aes(x=Anio, y=GasolinaRegular)) +
+p<-ggplot(data=df, aes(x=Anio, y=GasolinaRegular, fill = "Consumo")) +
   geom_bar(stat="identity")
+p <- p + scale_fill_manual(values = c("#56B4E9"))
 p
 ```
 
@@ -101,7 +118,7 @@ En esta gráfica se muestra el consumo por año de gasolina tipo super. Como se 
 df <- consumo[,c(3,5)]
 p<-ggplot(data=df, aes(x=Mes, y=GasolinaRegular)) +
   geom_bar(stat="identity")
-p
+p 
 ```
 
 Observando la gráfica del consumo en cada mes a lo largo de los 21 años se puede notar (como en la gráfica de gasolina tipo super) que no existe realmente un cambio tan significativo en el consumo durante estos meses. De nuevo el mes que tiene más es diciemibre y el que tiene menos es junio. Por lo que parece ser que esos meses son donde hay mas y menos tránsido respectivamente en cada año.
